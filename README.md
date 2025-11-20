@@ -1,3 +1,10 @@
+Ejecutar en este orden:
+
+1. Gateway  
+2. Ticket Service  
+3. Notification Service  
+
+
 🚀 Microservicio: Tickets – Notificaciones – Gateway
 
 Este proyecto está compuesto por tres microservicios independientes, diseñados para gestionar solicitudes de soporte dentro de un instituto.
@@ -68,12 +75,6 @@ git clone <url-del-repositorio>
 
 Abrir cada microservicio (gateway, tickets, notifications).
 
-Ejecutar en este orden:
-
-1. Gateway  
-2. Ticket Service  
-3. Notification Service  
-
 
 🛠 Requisitos
 
@@ -84,7 +85,6 @@ Maven
 MySQL o PostgreSQL según configuración
 
 IDE recomendado: IntelliJ IDEA / VSCode / Eclipse
-
 
 
 🔒 Seguridad (en desarrollo)
