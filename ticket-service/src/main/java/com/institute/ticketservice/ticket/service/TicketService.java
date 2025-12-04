@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +71,13 @@ public class TicketService {
 
         Ticket savedTicket = ticketRepositorio.save(ticket);
 
+        // Generate Ticket Code: TICKET-[RANDOM]-[ID]
+        String randomCode = UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+        String ticketCode = String.format("TICKET-%s-%04d", randomCode, savedTicket.getId());
+        savedTicket.setTicketCode(ticketCode);
+
+        savedTicket = ticketRepositorio.save(savedTicket);
+
         // Send notification asynchronously
         notificationClient.sendTicketCreatedNotification(
                 savedTicket.getId(),
@@ -86,10 +94,9 @@ public class TicketService {
         if (estudianteId != null) {
             return ticketRepositorio.findByEstudianteId(estudianteId);
         }
-        if (estado != null) {
-            return ticketRepositorio.findByEstadoOrderByPriorityDescFechaCreacionAsc(estado);
-        }
-        return ticketRepositorio.findAllByOrderByPriorityDescFechaCreacionAsc();
+        // Use the new custom sorting method for general listing or filtering by state
+        // only
+        return ticketRepositorio.findAllWithCustomPrioritySorting(estado);
     }
 
     public Ticket obtenerPorId(Integer id) {
@@ -116,6 +123,23 @@ public class TicketService {
                 updatedTicket.getEstudianteId());
 
         return updatedTicket;
+    }
+
+    public Ticket actualizarPrioridad(Integer id, String priority) {
+        Ticket ticket = obtenerPorId(id);
+        try {
+            ticket.setPriority(com.institute.ticketservice.ticket.model.Priority.valueOf(priority.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Prioridad inválida: " + priority);
+        }
+        return ticketRepositorio.save(ticket);
+    }
+
+    public void eliminarTicket(Integer id) {
+        if (!ticketRepositorio.existsById(id)) {
+            throw new RuntimeException("Ticket no encontrado");
+        }
+        ticketRepositorio.deleteById(id);
     }
 
 }

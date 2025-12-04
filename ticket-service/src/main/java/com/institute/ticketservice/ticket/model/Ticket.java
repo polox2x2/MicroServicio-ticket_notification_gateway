@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@org.hibernate.annotations.SQLDelete(sql = "UPDATE ticket SET deleted = true WHERE id = ?")
+@org.hibernate.annotations.Where(clause = "deleted = false")
 public class Ticket {
 
     @Id
@@ -25,6 +27,9 @@ public class Ticket {
 
     @Column(name = "advisor_id")
     private Integer advisorId;
+
+    @Column(name = "ticket_code")
+    private String ticketCode;
 
     @Column(name = "title", nullable = false, length = 255)
     private String titulo;
@@ -50,4 +55,8 @@ public class Ticket {
 
     @Column(name = "resolved_at")
     private LocalDateTime fechaResolucion;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean deleted = false;
 }

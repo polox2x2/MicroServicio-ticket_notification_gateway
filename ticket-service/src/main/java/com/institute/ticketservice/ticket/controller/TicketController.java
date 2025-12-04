@@ -46,6 +46,20 @@ public class TicketController {
         return ResponseEntity.ok(actualizado);
     }
 
+    @PatchMapping("/{id}/priority")
+    public ResponseEntity<Ticket> actualizarPrioridad(
+            @PathVariable Integer id,
+            @Valid @RequestBody com.institute.ticketservice.ticket.dto.TicketUpdatePriorityRequestDTO dto) {
+        Ticket actualizado = ticketServicio.actualizarPrioridad(id, dto.getPriority());
+        return ResponseEntity.ok(actualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        ticketServicio.eliminarTicket(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}/assign")
     public ResponseEntity<Ticket> asignarTicket(
             @PathVariable Integer id,
